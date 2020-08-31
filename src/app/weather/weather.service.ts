@@ -24,7 +24,7 @@ interface IcurrentWeatherData {
 }
 
 export interface IWeatherService {
-  //readonly currentWeather$ =  BehaviorSubject<ICurrentWeather>();
+  //readonly currentWeather$ = new BehaviorSubject<ICurrentWeather>;
   getCurrentWeather(
     search: string | number,
     country?: string

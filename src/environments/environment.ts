@@ -6,6 +6,8 @@ export const environment = {
   production: false,
   appId: 'b4455a20ac82b9c5ec10af5a775cbdb6',
   baseUrl: 'https://',
+  username: 'McEnos',
+  geonamesApi: 'api',
 };
 
 /*
