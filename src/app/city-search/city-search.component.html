@@ -5,7 +5,7 @@
     <mat-icon matPrefix>search</mat-icon>
     <input matInput aria-label="City or Zip" [formControl]="search">
     <mat-error *ngIf="search.invalid">
-      {{ getErrorMessage()}}
+      Type more than one character to search
     </mat-error>
   </mat-form-field>
 </form>
