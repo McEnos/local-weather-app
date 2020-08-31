@@ -30,9 +30,9 @@ export class CitySearchComponent implements OnInit {
       });
   }
 
-  getErrorMessage() {
+  /*   getErrorMessage() {
     return this.search.hasError('minLength')
       ? 'Type more than one character to search'
       : '';
-  }
+  }*/
 }
