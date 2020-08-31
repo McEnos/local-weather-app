@@ -1,8 +1,8 @@
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { ICurrentWeather } from '../interfaces';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
@@ -24,17 +24,28 @@ interface IcurrentWeatherData {
 }
 
 export interface IWeatherService {
+  //readonly currentWeather$ =  BehaviorSubject<ICurrentWeather>();
   getCurrentWeather(
     search: string | number,
     country?: string
   ): Observable<ICurrentWeather>;
 
   getCurrentWeatherByCoords(coords: Coordinates): Observable<ICurrentWeather>;
+
+  updateCurrentWeather(search: string | number, country?: string): void;
 }
 @Injectable({
   providedIn: 'root',
 })
-export class WeatherService {
+export class WeatherService implements WeatherService {
+  readonly currentWeather$ = new BehaviorSubject<ICurrentWeather>({
+    city: '--',
+    country: '--',
+    date: Date.now(),
+    image: '',
+    temperature: 0,
+    description: '',
+  });
   constructor(private httpClient: HttpClient) {}
 
   /*  getCurrentWeather(
@@ -99,5 +110,11 @@ export class WeatherService {
       .set('lon', coords.longitude.toString());
 
     return this.getCurrentWeatherHelper(uriParams);
+  }
+
+  updateCurrentWeather(search: string | number, country?: string): void {
+    this.getCurrentWeather(search, country).subscribe((weather) => {
+      this.currentWeather$.next(weather);
+    });
   }
 }
