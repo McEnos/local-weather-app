@@ -22,13 +22,22 @@ interface IcurrentWeatherData {
   dt: number;
   name: string;
 }
+
+export interface IWeatherService {
+  getCurrentWeather(
+    search: string | number,
+    country?: string
+  ): Observable<ICurrentWeather>;
+
+  getCurrentWeatherByCoords(coords: Coordinates): Observable<ICurrentWeather>;
+}
 @Injectable({
   providedIn: 'root',
 })
 export class WeatherService {
   constructor(private httpClient: HttpClient) {}
 
-  getCurrentWeather(
+  /*  getCurrentWeather(
     city: string,
     country: string
   ): Observable<ICurrentWeather> {
@@ -41,7 +50,7 @@ export class WeatherService {
         { params: uriParams }
       )
       .pipe(map((data) => this.transformToIcurrentWeather(data)));
-  }
+  } */
 
   private transformToIcurrentWeather(
     data: IcurrentWeatherData
@@ -57,5 +66,38 @@ export class WeatherService {
   }
   private convertKelvinToFahrenheit(kelvin: number): number {
     return (kelvin * 9) / 5 - 459.67;
+  }
+
+  getCurrentWeather(
+    search: string | number,
+    country?: string
+  ): Observable<ICurrentWeather> {
+    let uriParams = new HttpParams();
+    if (typeof search === 'string') {
+      uriParams = uriParams.set('q', country ? `${search},${country}` : search);
+    } else {
+      uriParams = uriParams.set('zip', 'search');
+    }
+    return this.getCurrentWeatherHelper(uriParams);
+  }
+
+  private getCurrentWeatherHelper(
+    uriParams: HttpParams
+  ): Observable<ICurrentWeather> {
+    uriParams = uriParams.set('appid', environment.appId);
+    return this.httpClient
+      .get<IcurrentWeatherData>(
+        `${environment.baseUrl}api.openweathermap.org/data/2.5/weather`,
+        { params: uriParams }
+      )
+      .pipe(map((data) => this.transformToIcurrentWeather(data)));
+  }
+
+  getCurrentWeatherByCoords(coords: Coordinates): Observable<ICurrentWeather> {
+    const uriParams = new HttpParams()
+      .set('lat', coords.latitude.toString())
+      .set('lon', coords.longitude.toString());
+
+    return this.getCurrentWeatherHelper(uriParams);
   }
 }
